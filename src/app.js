@@ -32,9 +32,9 @@ app.post("/cadastro", async (req, res) => {
   try {
     const emailExiste = await db
       .collection("users")
-      .find({ email: req.body.email });
-    if (emailExiste) {
-      return res.status(422).send("Email já cadastrado!");
+      .find({ email: req.body.email }).toArray();
+    if (emailExiste.length !== 0) {
+      return res.status(422).send("E-mail já cadastrado!");
     }
   } catch (error) {
     res.send(error);
