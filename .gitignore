@@ -2,4 +2,3 @@ node_modules
 .env
 .wakatime-project
 package-lock.json
-package.json
