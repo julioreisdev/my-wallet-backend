@@ -105,5 +105,15 @@ export async function transacaoUser(req, res) {
 
 export async function transacoesUser(req, res) {
   const { section } = res.locals;
-  res.send("quer as transacoes?");
+
+  const transacoes = await db
+    .collection("transacoes")
+    .find({ userId: section.userId })
+    .toArray();
+  const usuario = await db.collection("users").findOne({ _id: section.userId });
+
+  res.send({
+    usuario,
+    transacoes: transacoes,
+  });
 }
