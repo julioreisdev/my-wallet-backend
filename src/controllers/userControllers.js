@@ -39,6 +39,7 @@ export async function createUser(req, res) {
     nome: req.body.nome,
     email: req.body.email,
     senha: senhaSegura,
+    saldo: 0,
   });
   res.sendStatus(201);
 }
@@ -70,4 +71,39 @@ export async function loginUser(req, res) {
   } catch (error) {
     return res.send(error);
   }
+}
+
+export async function transacaoUser(req, res) {
+  const transacaoSchema = joi.object({
+    desc: joi.string().required(),
+    valor: joi.number().required(),
+  });
+
+  const { error } = transacaoSchema.validate(req.body, { abortEarly: false });
+  if (error) {
+    const erros = error.details.map((detail) => detail.message);
+    return res.status(422).send(erros);
+  }
+
+  const { section } = res.locals;
+
+  await db.collection("transacoes").insertOne({
+    userId: section.userId,
+    desc: req.body.desc,
+    valor: Number(req.body.valor),
+  });
+
+  let usuario = await db.collection("users").findOne({ _id: section.userId });
+  const saldo = Number(usuario.saldo) + Number(req.body.valor);
+
+  await db
+    .collection("users")
+    .updateOne({ _id: section.userId }, { $set: { saldo: saldo } });
+
+  res.sendStatus(200);
+}
+
+export async function transacoesUser(req, res) {
+  const { section } = res.locals;
+  res.send("quer as transacoes?");
 }
