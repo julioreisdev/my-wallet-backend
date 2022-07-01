@@ -87,10 +87,13 @@ export async function transacaoUser(req, res) {
 
   const { section } = res.locals;
 
+  let data = new Date();
+
   await db.collection("transacoes").insertOne({
     userId: section.userId,
     desc: req.body.desc,
     valor: Number(req.body.valor),
+    data: data.toLocaleString(),
   });
 
   let usuario = await db.collection("users").findOne({ _id: section.userId });
