@@ -11,6 +11,6 @@ app.use(express.json(), cors());
 app.use(postRoutes);
 app.use(getRoutes);
 
-app.listen(process.env.PORT_SERVER, () => {
+app.listen(process.env.PORT, () => {
   console.log("Server Running...");
 });
